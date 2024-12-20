@@ -21,7 +21,17 @@ class TodosController < ApplicationController
 
   # POST /todos or /todos.json
   def create
-    # 12/20でやる
+    @todo = Todo.create!(todo_params)
+
+    respond_to do |format|
+      format.html { redirect_to @todo, notice: "Todo was successfully created." }
+      format.json { render :show, status: :created, location: @todo }
+    end
+  rescue ActiveRecord::RecordInvalid => e
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: e.record.errors, status: :unprocessable_entity }
+      end
   end
 
   # PATCH/PUT /todos/1 or /todos/1.json
